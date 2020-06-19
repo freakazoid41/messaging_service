@@ -1,7 +1,7 @@
 class Socket {
     constructor(){
         this.clients = {};
-        this.socket = new WebSocket('ws://localhost:8000');
+        this.socket = new WebSocket('ws://localhost:9002');
         this.id = parseInt(document.getElementById('in_id').value);
         this.images ={
             image1:document.getElementById('in_image1').value,
@@ -43,12 +43,21 @@ class Socket {
                     this.contacts.innerHTML = '';
                     for(let i=0;i<data.data.length;i++){
                         if(this.clients[data.data.id] === undefined){
+                            data.data[i].type=1;
                             this.clients[data.data[i].id] = data.data[i];
                             this.contacts.innerHTML+=this.addClient(data.data[i]);
                         } 
                     }
                     break;
                 case 3:
+                    //set person to person list if person is offline
+                    if(!this.clients[data.data.owner]){
+                        this.clients[data.data.owner] = {
+                            id:data.data.owner,
+                            type:0
+                        };
+                        this.contacts.innerHTML+=this.addClient(this.clients[data.data.owner]);
+                    }
                     //message come
                     this.setMessage({
                         owner:parseInt(data.data.owner),
@@ -146,19 +155,18 @@ class Socket {
 
     addClient(data){
         if(data.id != this.id){
-            return `<li class="active1" id="per_`+data.id+`">
+            return `<li class="active1 ${data.type === 0 ? 'offline' : ''}" id="per_${data.id}">
                         <div class="d-flex bd-highlight" style="pointer-events:none;">
                             <div class="img_cont">
-                                <img src="`+this.images.image2+`" class="rounded-circle user_img">
+                                <img src="${this.images.image2}" class="rounded-circle user_img">
                                 <span class="online_icon"></span>
                             </div>
                             <div class="user_info">
                                 <div>
-                                <span>`+data.id+`</span>
-                                <p>`+data.id+` is online</p>
+                                    <span>${data.id}</span>
+                                    <p>${data.id} is online</p>
                                 </div>
-                                <i id="icon_`+data.id+`" class="fa fa-circle" hidden style="color:red"></i>
-                                
+                                <i id="icon_${data.id}" class="fa fa-circle" hidden style="color:red"></i>
                             </div>
                         </div>
                     </li>`;
@@ -189,7 +197,7 @@ class Socket {
     }
 
     setMessageHtml(obj){
-        console.log(obj);
+        
         let coming = `<div class="d-flex justify-content-start mb-4">
                         <div class="img_cont_msg">
                             <img src="`+this.images.image1+`" class="rounded-circle user_img_msg">

@@ -12,7 +12,7 @@ class Client{
    */
   String register(WebSocket conn){
     //register new connection to object
-    String key = (new DateTime.now().millisecondsSinceEpoch).toString();
+    var key = (DateTime.now().millisecondsSinceEpoch).toString();
     connections[key] = conn;
     //return key
     return key;
@@ -31,10 +31,10 @@ class Client{
    */
   Future<bool> send(Map<String,dynamic> data) async{
     //convert to string
-    String response = jsonEncode(data);
+    var response = jsonEncode(data);
     try {
       //send data to every connections of client
-      for(String key in connections.keys){
+      for(var key in connections.keys){
         connections[key].add(response);
       }
       return true;

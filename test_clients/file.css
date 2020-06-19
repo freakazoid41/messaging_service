@@ -119,9 +119,7 @@ bottom: 0.2em;
 right: 0.4em;
 border:1.5px solid white;
 }
-.offline{
-background-color: #c23616 !important;
-}
+
 .user_info{
     margin-top: auto;
     margin-bottom: auto;
@@ -285,4 +283,8 @@ to {bottom: 0; opacity: 0;}
 @keyframes fadeout {
 from {bottom: 30px; opacity: 1;}
 to {bottom: 0; opacity: 0;}
+}
+
+.offline .online_icon{
+    background-color: red;
 }

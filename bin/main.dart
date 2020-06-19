@@ -1,7 +1,6 @@
-import 'dart:io' show HttpServer, HttpRequest, WebSocket, WebSocketTransformer,SecurityContext;
-
+import 'dart:io' show Directory,HttpServer, HttpRequest, WebSocket, WebSocketTransformer,SecurityContext;
 import 'services/messagging_service.dart';
-
+import 'config.dart';
 void main(){
   start();
 }
@@ -9,18 +8,19 @@ void main(){
 void start() async{
   HttpServer server;
   try {
-    var isTest = false;
+    
     print('service started..');
-    if(!isTest){
+    if(!Config.isTest){
       //get certificates
       var context = SecurityContext.defaultContext;
-      context.useCertificateChain('falan.crt');
-      context.usePrivateKey('falan.key');
+      context.useCertificateChain('/var/www/services/cert/STAR_ciloglunet_com.crt');
+      context.usePrivateKey('/var/www/services/cert/STAR_ciloglunet_com.key');
       //start secured server connection
       server = await HttpServer.bindSecure('0.0.0.0',
                       9002,
                       context);
     }else{
+      //serve normaly
       server = await HttpServer.bind('localhost', 9002);
     }
     //call service
@@ -39,7 +39,6 @@ void start() async{
       start();
     });
   }
- 
 }
 
 
